@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Klopfspiel</title>
+</head>
+<body>
+    <script>
+
+        if(localStorage.Name == undefined)
+        {
+            window.location.replace("/");
+        }
+
+        var host = window.location.host;
+        var ws = new WebSocket('ws://' + host + '/ws');
+
+        ws.onopen = function () {
+            ws.send("name:" + localStorage.Name);
+        }
+        ws.onmessage = function (msg) {
+            console.log(msg);
+            if(msg.data.startsWith("knock:"))
+                document.getElementById("output").innerHTML += msg.data.substr(6) + " knocked<br/>";
+            if(msg.data.startsWith("name:"))
+                document.getElementById("output").innerHTML += msg.data.substr(5) + " joined!<br/>";
+        }
+        function clickHandler() {
+            ws.send("knock:" + localStorage.Name)
+        }    
+    </script>
+    <button onclick="clickHandler()">Klopfen</button>
+    <div id="output"></div>
+</body>
+</html>

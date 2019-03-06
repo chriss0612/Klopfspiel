@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Klopfspiel</title>
+</head>
+<body>
+    <script>
+        function clickHandler()
+        {
+            console.log("123");
+            localStorage.Name = document.getElementById("nameField").value;
+            window.location.href = "game";
+        }    
+    </script>
+    <input type="text" id="nameField"></input>
+    <br>
+    <button onclick="clickHandler()">Submit</button>
+
+</body>
+</html>
