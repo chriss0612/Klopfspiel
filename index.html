@@ -4,16 +4,19 @@
     <title>Klopfspiel</title>
 </head>
 <body>
-    <script>
-        function clickHandler()
-        {
-            localStorage.Name = document.getElementById("nameField").value;
-            window.location.href = "game";
-        }    
-    </script>
     <input type="text" id="nameField"></input>
     <br>
     <button onclick="clickHandler()">Submit</button>
-
+    <script>
+            if(localStorage.Name != undefined)
+            {
+                document.getElementById("nameField").value = localStorage.Name;
+            }
+            function clickHandler()
+            {
+                localStorage.Name = document.getElementById("nameField").value;
+                window.location.href = "game";
+            }    
+        </script>
 </body>
 </html>
