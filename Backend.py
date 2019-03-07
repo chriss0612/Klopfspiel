@@ -14,16 +14,27 @@ import tornado.web
 
 class EchoWebSocket(tornado.websocket.WebSocketHandler):
     def open(self):
-        print("WebSocket opened")
         clients.append(self)
 
     def on_message(self, message):
-        for client in clients:
-            client.write_message(message)
+        print("Message recived: " + message)
+        if(message.startswith("name:")):
+            if(self in names):
+                return
+            names[self] = message[5:]
+            for client in clients:
+                client.write_message('joined:' + message[5:])
+        elif (message.startswith("knock:")):
+            for client in clients:
+                client.write_message(message)
 
     def on_close(self):
-        print("WebSocket closed")
         clients.remove(self)
+
+        for client in clients:
+            client.write_message('left:' + names[self])
+        del names[self]
+
 
 class MainHandler(tornado.web.RequestHandler):
     def get(self):
@@ -42,6 +53,7 @@ def make_app():
 
 if __name__ == "__main__":
     clients = []
+    names = {}
     app = make_app()
     app.listen(8888)
     tornado.ioloop.IOLoop.current().start()

@@ -18,11 +18,13 @@
             ws.send("name:" + localStorage.Name);
         }
         ws.onmessage = function (msg) {
-            console.log(msg);
+            console.log(msg.data);
             if(msg.data.startsWith("knock:"))
-                document.getElementById("output").innerHTML += msg.data.substr(6) + " knocked<br/>";
-            if(msg.data.startsWith("name:"))
-                document.getElementById("output").innerHTML += msg.data.substr(5) + " joined!<br/>";
+                document.getElementById("output").innerHTML += msg.data.substr(6).encodeURIComponent() + " knocked<br/>";
+            else if(msg.data.startsWith("joined:"))
+                document.getElementById("output").innerHTML += msg.data.substr(7).encodeURIComponent() + " joined!<br/>";
+            else if(msg.data.startsWith("left:"))
+                document.getElementById("output").innerHTML += msg.data.substr(5).encodeURIComponent() + " left<br/>";
         }
         function clickHandler() {
             ws.send("knock:" + localStorage.Name)
