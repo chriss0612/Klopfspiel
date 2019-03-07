@@ -5,7 +5,11 @@
 </head>
 <body>
     <script>
-
+        function escapeHTML(unsafeText) {
+            let div = document.createElement('div');
+            div.innerText = unsafeText;
+            return div.innerHTML;
+        }
         if(localStorage.Name == undefined)
         {
             window.location.replace("/");
@@ -20,11 +24,11 @@
         ws.onmessage = function (msg) {
             console.log(msg.data);
             if(msg.data.startsWith("knock:"))
-                document.getElementById("output").innerHTML += msg.data.substr(6).encodeURIComponent() + " knocked<br/>";
+                document.getElementById("output").innerHTML += escapeHTML(msg.data.substr(6)) + " knocked<br/>";
             else if(msg.data.startsWith("joined:"))
-                document.getElementById("output").innerHTML += msg.data.substr(7).encodeURIComponent() + " joined!<br/>";
+                document.getElementById("output").innerHTML += escapeHTML(msg.data.substr(7)) + " joined!<br/>";
             else if(msg.data.startsWith("left:"))
-                document.getElementById("output").innerHTML += msg.data.substr(5).encodeURIComponent() + " left<br/>";
+                document.getElementById("output").innerHTML += escapeHTML(msg.data.substr(5)) + " left<br/>";
         }
         function clickHandler() {
             ws.send("knock:" + localStorage.Name)
