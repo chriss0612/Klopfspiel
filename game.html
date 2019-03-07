@@ -5,6 +5,14 @@
 </head>
 <body>
     <script>
+        function keepalive()
+        {
+            ws.send("keepalive");
+            console.log("time")
+            setTimeout(keepalive,20000);
+        }
+
+
         function escapeHTML(unsafeText) {
             let div = document.createElement('div');
             div.innerText = unsafeText;
@@ -20,6 +28,7 @@
 
         ws.onopen = function () {
             ws.send("name:" + localStorage.Name);
+            setTimeout(keepalive,20000);
         }
         ws.onmessage = function (msg) {
             console.log(msg.data);
