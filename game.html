@@ -1,49 +1,51 @@
 <!DOCTYPE html>
-<html>
-<head>
-    <title>Klopfspiel</title>
-</head>
-<body>
-    <script>
-        function keepalive()
-        {
-            ws.send("keepalive");
-            console.log("time")
-            setTimeout(keepalive,20000);
-        }
+<html onclick="clickHandler()">
+    <head>
+        <title>Klopfspiel</title>
+    </head>
+    <body >
+        <div id="output" width="100%" height="100%">
+            Um zu klopfen irgendwo hin tippen!<br/>
+        </div>
+        <script>
+            function keepalive()
+            {
+                ws.send("keepalive");
+                console.log("time")
+                setTimeout(keepalive,20000);
+            }
 
 
-        function escapeHTML(unsafeText) {
-            let div = document.createElement('div');
-            div.innerText = unsafeText;
-            return div.innerHTML;
-        }
-        if(localStorage.Name == undefined)
-        {
-            window.location.replace("/");
-        }
+            function escapeHTML(unsafeText) {
+                let div = document.createElement('div');
+                div.innerText = unsafeText;
+                return div.innerHTML;
+            }
+            if(localStorage.Name == undefined)
+            {
+                window.location.replace("/");
+            }
 
-        var host = window.location.host;
-        var ws = new WebSocket('ws://' + host + '/ws');
+            var host = window.location.host;
+            var webSockProto = location.protocol == "https:" ? "wss" : "ws";
+            var ws = new WebSocket('ws://' + host + '/ws');
 
-        ws.onopen = function () {
-            ws.send("name:" + localStorage.Name);
-            setTimeout(keepalive,20000);
-        }
-        ws.onmessage = function (msg) {
-            console.log(msg.data);
-            if(msg.data.startsWith("knock:"))
-                document.getElementById("output").innerHTML += escapeHTML(msg.data.substr(6)) + " knocked<br/>";
-            else if(msg.data.startsWith("joined:"))
-                document.getElementById("output").innerHTML += escapeHTML(msg.data.substr(7)) + " joined!<br/>";
-            else if(msg.data.startsWith("left:"))
-                document.getElementById("output").innerHTML += escapeHTML(msg.data.substr(5)) + " left<br/>";
-        }
-        function clickHandler() {
-            ws.send("knock:" + localStorage.Name)
-        }    
-    </script>
-    <button onclick="clickHandler()">Klopfen</button>
-    <div id="output"></div>
-</body>
+            ws.onopen = function () {
+                ws.send("name:" + localStorage.Name);
+                setTimeout(keepalive,20000);
+            }
+            ws.onmessage = function (msg) {
+                console.log(msg.data);
+                if(msg.data.startsWith("knock:"))
+                    document.getElementById("output").innerHTML += escapeHTML(msg.data.substr(6)) + " knocked<br/>";
+                else if(msg.data.startsWith("joined:"))
+                    document.getElementById("output").innerHTML += escapeHTML(msg.data.substr(7)) + " joined!<br/>";
+                else if(msg.data.startsWith("left:"))
+                    document.getElementById("output").innerHTML += escapeHTML(msg.data.substr(5)) + " left<br/>";
+            }
+            function clickHandler() {
+                ws.send("knock:" + localStorage.Name)
+            }    
+        </script>
+    </body>
 </html>

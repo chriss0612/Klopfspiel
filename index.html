@@ -1,22 +1,22 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <title>Klopfspiel</title>
-</head>
-<body>
-    <input type="text" id="nameField"></input>
-    <br>
-    <button onclick="clickHandler()">Submit</button>
-    <script>
-            if(localStorage.Name != undefined)
-            {
-                document.getElementById("nameField").value = localStorage.Name;
-            }
-            function clickHandler()
-            {
-                localStorage.Name = document.getElementById("nameField").value;
-                window.location.href = "game";
-            }    
-        </script>
-</body>
+    <head>
+        <title>Klopfspiel</title>
+    </head>
+    <body>
+        <input type="text" id="nameField" style="width: 100%; height: 50%; font-size: 40px;"></input>
+        <br/><br/><br/><br/>
+        <button onclick="clickHandler()"  style="width: 100%; height: 50%; font-size: 40px;">Submit</button>
+        <script>
+                if(localStorage.Name != undefined)
+                {
+                    document.getElementById("nameField").value = localStorage.Name;
+                }
+                function clickHandler()
+                {
+                    localStorage.Name = document.getElementById("nameField").value;
+                    window.location.href = "game";
+                }    
+            </script>
+    </body>
 </html>
