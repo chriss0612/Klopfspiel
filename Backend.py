@@ -17,14 +17,17 @@ class EchoWebSocket(tornado.websocket.WebSocketHandler):
         clients.append(self)
 
     def on_message(self, message):
-        print("Message recived: " + message)
+        
+        
         if(message.startswith("name:")):
+            print("Message recived: " + message)
             if(self in names):
                 return
             names[self] = message[5:]
             for client in clients:
                 client.write_message('joined:' + message[5:])
         elif (message.startswith("knock:")):
+            print("Message recived: " + message)
             for client in clients:
                 client.write_message(message)
 
