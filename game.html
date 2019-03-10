@@ -27,8 +27,8 @@
             }
 
             var host = window.location.host;
-            var webSockProto = location.protocol == "https:" ? "wss" : "ws";
-            var ws = new WebSocket(webSockProto + host + '/ws');
+            var webSockProto = location.protocol == "https:" ? "wss:" : "ws:";
+            var ws = new WebSocket(webSockProto + "//" + host + '/ws');
 
             ws.onopen = function () {
                 ws.send("name:" + localStorage.Name);
