@@ -13,6 +13,12 @@ import tornado.web
 
 
 class EchoWebSocket(tornado.websocket.WebSocketHandler):
+
+    def broadcast(self, msg):
+        messages.append(msg)
+        for client in clients:
+            client.write_message(msg)
+
     def open(self):
         clients.append(self)
 
@@ -24,27 +30,23 @@ class EchoWebSocket(tornado.websocket.WebSocketHandler):
             if(self in names):
                 return
             names[self] = message[5:]
-            for client in clients:
-                client.write_message('joined:' + message[5:])
+            for message in messages:
+                self.write_message(message)
+            self.broadcast('joined:' + message[5:])
         elif (message.startswith("knock")):
             print("Message recived: " + message)
             if(self in names):
-                for client in clients:
-                    client.write_message("knock:" + names[self])
-                    #print("test")
+                self.broadcast("knock:" + names[self])
         elif (message.startswith("reset")):
             print("Message recived: " + message)
             if(self in names):
-                for client in clients:
-                    client.write_message("reset:" + names[self])
+                self.broadcast("reset:" + names[self])
 
     def on_close(self):
         clients.remove(self)
         if(self in names):
-            for client in clients:
-                client.write_message('left:' + names[self])
+            self.broadcast('left:' + names[self])
             del names[self]
-
 
 class MainHandler(tornado.web.RequestHandler):
     def get(self):
@@ -64,6 +66,7 @@ def make_app():
 if __name__ == "__main__":
     clients = []
     names = {}
+    messages = []
     app = make_app()
     app.listen(8888)
     tornado.ioloop.IOLoop.current().start()
