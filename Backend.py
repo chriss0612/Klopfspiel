@@ -26,17 +26,24 @@ class EchoWebSocket(tornado.websocket.WebSocketHandler):
             names[self] = message[5:]
             for client in clients:
                 client.write_message('joined:' + message[5:])
-        elif (message.startswith("knock:")):
+        elif (message.startswith("knock")):
             print("Message recived: " + message)
-            for client in clients:
-                client.write_message(message)
+            if(self in names):
+                for client in clients:
+                    client.write_message("knock:" + names[self])
+                    #print("test")
+        elif (message.startswith("reset")):
+            print("Message recived: " + message)
+            if(self in names):
+                for client in clients:
+                    client.write_message("reset:" + names[self])
 
     def on_close(self):
         clients.remove(self)
-
-        for client in clients:
-            client.write_message('left:' + names[self])
-        del names[self]
+        if(self in names):
+            for client in clients:
+                client.write_message('left:' + names[self])
+            del names[self]
 
 
 class MainHandler(tornado.web.RequestHandler):
