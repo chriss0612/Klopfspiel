@@ -23,23 +23,29 @@ class EchoWebSocket(tornado.websocket.WebSocketHandler):
         clients.append(self)
 
     def on_message(self, message):
-        
-        
+        global messages
         if(message.startswith("name:")):
-            print("Message recived: " + message)
+            print('Message recived: ' + message)
             if(self in names):
                 return
             names[self] = message[5:]
             for message in messages:
                 self.write_message(message)
-            self.broadcast('joined:' + message[5:])
+            self.broadcast('joined:' + names[self])
+
+
         elif (message.startswith("knock")):
             print("Message recived: " + message)
             if(self in names):
-                self.broadcast("knock:" + names[self])
+                msg = "knock:" + names[self]
+                if(not (msg in messages)):
+                    self.broadcast(msg)
+
+
         elif (message.startswith("reset")):
             print("Message recived: " + message)
             if(self in names):
+                messages = []
                 self.broadcast("reset:" + names[self])
 
     def on_close(self):
@@ -55,7 +61,6 @@ class MainHandler(tornado.web.RequestHandler):
 class GameHandler(tornado.web.RequestHandler):
     def get(self):
         self.render("game.html")
-
 def make_app():
     return tornado.web.Application([
         (r"/", MainHandler),
